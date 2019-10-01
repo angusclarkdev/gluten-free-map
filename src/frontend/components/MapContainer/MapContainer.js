@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react'
 import axios from 'axios'
+import get from 'lodash.get'
 import { MAPS_API_KEY, ADDRESSES } from '../../constants'
 
 export class MapContainer extends Component {
@@ -12,42 +13,27 @@ export class MapContainer extends Component {
   }
 
   state = {
-    geocodeRes: []
+    geocodeResponse: []
   }
 
   async componentDidMount () {
-    // try {
-    const res = ADDRESSES.map(async (item, i) => {
-      axios.all([
-        await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-          params: {
-            address: item.address,
-            key: MAPS_API_KEY
-          }
-        })
-      ])
-    })
-
-    console.info(res)
-    // const res = await axios.al/l([
-    // Array.from(ADDRESSES)axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-    //     params: {
-    //       address: '332KenningtonLnLambethLondonSE115HY',
-    //       key: MAPS_API_KEY
-    //     }
-    //   })
-    //   this.setState({
-    //     geocodeRes: res.data.results
-    // //   })
-    //   console.log(res)
-    // } catch (error) {
-    //   console.error('there was an error with your request', error)
-    // }
+    try {
+      const promiseArray = ADDRESSES.map(item => axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+        params: {
+          address: item.address,
+          key: MAPS_API_KEY
+        }
+      }))
+      const result = await axios.all(promiseArray)
+      this.setState({
+        geocodeResponse: result
+      })
+    } catch (error) {
+      console.error('there was an error', error)
+    }
   }
 
   render () {
-    const { geocodeRes } = this.state
-    console.info(geocodeRes)
     return (
       <Map
         google={this.props.google}
@@ -55,12 +41,16 @@ export class MapContainer extends Component {
         style={this.mapStyles}
         initialCenter={{ lat: 51.5085, lng: -0.1249 }}
       >
-        {geocodeRes.map(item => (
-          <Marker
-            title={item.formatted_address}
-            name={item.formatted_address}
-            position={item.geometry.location} />
-        ))}
+        {this.state.geocodeResponse.map(item => {
+          const result = get(item, 'data.results[0]', [])
+          return (
+            <Marker
+              title={result.formatted_address}
+              name={result.formatted_address}
+              position={result.geometry.location}
+            />
+          )
+        })}
       </Map>
     )
   }
