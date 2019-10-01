@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react'
 import axios from 'axios'
-import { MAPS_API_KEY } from '../../constants'
+import { MAPS_API_KEY, ADDRESSES } from '../../constants'
 
 export class MapContainer extends Component {
   mapStyles = {
@@ -16,20 +16,33 @@ export class MapContainer extends Component {
   }
 
   async componentDidMount () {
-    try {
-      const res = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-        params: {
-          address: '332KenningtonLnLambethLondonSE115HY',
-          key: MAPS_API_KEY
-        }
-      })
-      this.setState({
-        geocodeRes: res.data.results
-      })
-      console.log(res)
-    } catch (error) {
-      console.error('there was an error with your request', error)
-    }
+    // try {
+    const res = ADDRESSES.map(async (item, i) => {
+      axios.all([
+        await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+          params: {
+            address: item.address,
+            key: MAPS_API_KEY
+          }
+        })
+      ])
+    })
+
+    console.info(res)
+    // const res = await axios.al/l([
+    // Array.from(ADDRESSES)axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+    //     params: {
+    //       address: '332KenningtonLnLambethLondonSE115HY',
+    //       key: MAPS_API_KEY
+    //     }
+    //   })
+    //   this.setState({
+    //     geocodeRes: res.data.results
+    // //   })
+    //   console.log(res)
+    // } catch (error) {
+    //   console.error('there was an error with your request', error)
+    // }
   }
 
   render () {
