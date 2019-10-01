@@ -15,7 +15,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
 *, *:before, *:after {
@@ -35,4 +36,8 @@ ol, ul {
 img {
   max-width: 100%;
   height: auto;
+}
+
+#root > div {
+  min-height: 100vh;
 }
