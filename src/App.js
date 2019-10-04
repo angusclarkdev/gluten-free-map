@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 import MapContainer from '@components/MapContainer'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import styled from 'styled-components'
 
 import './index.css'
@@ -11,7 +12,7 @@ const App = () => {
   const Wrapper = styled.section`
     position: relative
     vertical-align: middle;
-    width: 80%;
+    width: 60%;
     height: 100%;
     margin: 0 auto;
     padding: 1rem;
@@ -23,14 +24,66 @@ const App = () => {
     font-size: 2.5rem;
   `
   return (
-    <Wrapper>
-      <Title> Gluten free restaurants </Title>
-      <Filters />
-      <MapContainer />
-    </Wrapper>
+    <Router>
+      <Wrapper>
+        <Title> Gluten free restaurants </Title>
+        <Switch>
+          <Route path='/map'>
+            <Filters />
+            <MapContainer />
+          </Route>
+          <Route path='/'>
+            <Vibe />
+          </Route>
+        </Switch>
+      </Wrapper>
+    </Router>
   )
 }
 
+const Vibe = () => {
+  const Wrapper = styled.section`
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 0 auto;
+
+    article {
+      flex-basis: 48%;
+      width: 50%;
+      margin: 1rem 0px;
+      height: auto;
+      /* height: auto; */
+      border: thin solid red;
+      /* margin: 1rem; */
+      &::before {
+        content: '';
+        padding-top: 50%;
+        display: block;
+      }
+    }
+  `
+  return (
+    <Wrapper>
+      <article>
+        {/* image */}
+        {/* <img src='http://placehold.it/360x240' alt='' /> */}
+      </article>
+      <article>
+        {/* image */}
+        {/* <img src='http://placehold.it/360x240' alt='' /> */}
+      </article>
+      <article>
+        {/* image */}
+        {/* <img src='http://placehold.it/360x240' alt='' /> */}
+      </article>
+      <article>
+        {/* image */}
+        {/* <img src='http://placehold.it/360x240' alt='' /> */}
+      </article>
+    </Wrapper>
+  )
+}
 export default App
 
 const Dropdown = (props) => {

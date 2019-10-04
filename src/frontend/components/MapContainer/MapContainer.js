@@ -8,7 +8,6 @@ export class MapContainer extends Component {
   mapStyles = {
     position: 'relative',
     height: '80%',
-    width: '80%',
     margin: '0 auto'
   }
 
