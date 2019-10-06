@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import MapContainer from '@components/MapContainer'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import styled from 'styled-components'
+// import VibeCard from '@components/VibeCard'
 
 import './index.css'
 
@@ -10,12 +11,13 @@ import './index.css'
 
 const App = () => {
   const Wrapper = styled.section`
+    /* background-color: floralwhite; */
     position: relative
     vertical-align: middle;
     width: 60%;
     height: 100%;
     margin: 0 auto;
-    padding: 1rem;
+    padding-top: 1rem;
     /* display: flex; */
     /* flex-direction: column; */
     text-align: center;
@@ -28,12 +30,9 @@ const App = () => {
       <Wrapper>
         <Title> Gluten free restaurants </Title>
         <Switch>
-          <Route path='/map'>
+          <Route path='/'>
             <Filters />
             <MapContainer />
-          </Route>
-          <Route path='/'>
-            <Vibe />
           </Route>
         </Switch>
       </Wrapper>
@@ -41,66 +40,48 @@ const App = () => {
   )
 }
 
-const Vibe = () => {
-  const Wrapper = styled.section`
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin: 0 auto;
-
-    article {
-      flex-basis: 48%;
-      width: 50%;
-      margin: 1rem 0px;
-      height: auto;
-      /* height: auto; */
-      border: thin solid red;
-      /* margin: 1rem; */
-      &::before {
-        content: '';
-        padding-top: 50%;
-        display: block;
-      }
-    }
-  `
-  return (
-    <Wrapper>
-      <article>
-        {/* image */}
-        {/* <img src='http://placehold.it/360x240' alt='' /> */}
-      </article>
-      <article>
-        {/* image */}
-        {/* <img src='http://placehold.it/360x240' alt='' /> */}
-      </article>
-      <article>
-        {/* image */}
-        {/* <img src='http://placehold.it/360x240' alt='' /> */}
-      </article>
-      <article>
-        {/* image */}
-        {/* <img src='http://placehold.it/360x240' alt='' /> */}
-      </article>
-    </Wrapper>
-  )
-}
 export default App
 
-const Dropdown = (props) => {
-  const Select = styled.select`
-    font-size: 1rem;
-    margin: 16px;
-  `
-  const options = props.data.map((item, i) => <option key={i} value={item.value}> {item.text} </option>)
-  return (
-    <Select>
-      {options}
-    </Select>
-  )
+class Dropdown extends Component {
+  state = {
+    value: this.props.value
+  }
+
+  handleChange = (e) => {
+    this.setState({ value: e.target.value })
+  }
+
+  render () {
+    const Select = styled.select`
+      font-size: 1rem;
+      margin: 16px;
+    `
+    const options = this.props.data.map((item, i) => {
+      return (
+        <option
+          key={i}
+          disabled={item.value.includes('choose')}
+          value={item.value}> {item.text}
+        </option>
+      )
+    })
+    return (
+      <Select defaultValue={this.state.value} onChange={this.handleChange}>
+        {options}
+      </Select>
+    )
+  }
 }
 
 const Filters = () => {
+  const vibes = [
+    { value: 'choose your vibe', text: 'Choose your vibe' },
+    { value: 'romance', text: 'Romance' },
+    { value: 'groups', text: 'Groups' },
+    { value: 'open late', text: 'Open late' }
+  ]
   const cuisines = [
+    { value: 'choose your cuisine', text: 'Choose your cuisine' },
     { value: 'italian', text: 'Italian' },
     { value: 'asian', text: 'East Asian' },
     { value: 'indian', text: 'Indian' },
@@ -114,16 +95,22 @@ const Filters = () => {
     if (a.text > b.text) return 1
     return 0
   })
+
+  const Wrapper = styled.div`
+    border: thin solid red;
+  `
   const prices = [
+    { value: 'choose your price', text: 'Choose your price' },
     { value: 'cheap', text: '£' },
     { value: 'average', text: '££' },
     { value: 'expensive', text: '£££' }
   ]
 
   return (
-    <div>
-      <Dropdown data={cuisines} />
-      <Dropdown data={prices} />
-    </div>
+    <Wrapper>
+      <Dropdown data={vibes} value={'choose your vibe'} />
+      <Dropdown data={cuisines} value='choose your cuisine' />
+      <Dropdown data={prices} value='choose your price' />
+    </Wrapper>
   )
 }
